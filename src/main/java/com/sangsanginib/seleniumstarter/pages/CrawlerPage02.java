@@ -13,7 +13,7 @@ import java.util.Map;
 /* 신한투자증권 장외채권 데이터 크롤러 */
 public class CrawlerPage02 {
 
-    public void getBondsData() {
+    public void getBondsData() throws InterruptedException {
         WebDriver driver = new ChromeDriver();
         driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
 
@@ -44,6 +44,7 @@ public class CrawlerPage02 {
                 element.click();
                 elementFound = true;
             } catch (org.openqa.selenium.NoSuchElementException e) {
+                Thread.sleep(1000);
                 attemptCount++;
             }
         }
