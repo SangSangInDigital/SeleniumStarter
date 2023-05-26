@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/* 한국투자증권 장외채권 데이터 크롤러 */
-public class CrawlerPage01 {
+/* 신한투자증권 장외채권 데이터 크롤러 */
+public class CrawlerPage02 {
 
     public void getBondsData() {
         WebDriver driver = new ChromeDriver();
-        driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
+        driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
 
         // String title = driver.getTitle();
         // System.out.println(title);
@@ -29,31 +29,42 @@ public class CrawlerPage01 {
         // textBox.sendKeys("Selenium");
         // submitButton.click();
 
-        // WebElement message = driver.findElement(By.id("message"));
-        // String value = message.getText();
-        // assertEquals("Received!", value);
+        // List<BondsList> bondsLists = new ArrayList<>();
+        //*[@id="main"]/table/tbody/tr[1]/td[2]/a
+        //*[@id="main"]/table/tbody/tr[2]/td[2]/a
+        //*[@id="main"]/button//*[@id="main"]/button
 
-        // driver.quit();
+        int maxAttempts = 10;
+        int attemptCount = 0;
 
-        List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
+        boolean elementFound = false;
+        while (!elementFound && attemptCount < maxAttempts) {
+            try {
+                WebElement element = driver.findElement(By.xpath("//*[@id=\"main\"]/button"));
+                element.click();
+                elementFound = true;
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                attemptCount++;
+            }
+        }
+
+        List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"main\"]/table/tbody/tr"));
         System.out.println(webElements.size());
-        ////*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[1]/td[2]/strong
-        //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[3]/td[2]/
-        ////*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[5]/td[2]/strong
 
         int size = webElements.size();
-        // List<BondsList> bondsLists = new ArrayList<>();
 
-        for (int i = 1; i < size + 1; i += 2) {
-            String title = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
+        for (int i = 1; i < size + 1; i ++) {
+            String title = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr["+ i +"]/td[2]/a")).getText();
             System.out.println(title);//*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[2] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[3] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[101]/td[2]/strong
+            String endDate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr["+ i +"]/td[3]")).getText();
+            System.out.println(endDate);
             // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[2]/td[2]
             // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[12]/td[2]
             // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[14]/td[2]
             // String afterReturnRate = "";
         }
 
-        for (int i = 2; i < size + 2; i += 2) {
+        /*for (int i = 2; i < size + 2; i += 2) {
             String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
             System.out.println(beforeReturnRate);
         }
@@ -61,6 +72,6 @@ public class CrawlerPage01 {
         for (int i = 2; i < size + 2; i += 2) {
             String afterReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i +"]/td[3]")).getText();
             System.out.println(afterReturnRate);
-        }
+        }*/
     }
 }

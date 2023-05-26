@@ -1,6 +1,6 @@
 package com.sangsanginib.seleniumstarter;
 
-import com.sangsanginib.seleniumstarter.pages.CrawlerPage01;
+import com.sangsanginib.seleniumstarter.pages.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -16,15 +16,15 @@ public class SeleniumStarterApplication {
 
     public void crawling() {
 		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
-		CrawlerPage01 crawlerPage01 = new CrawlerPage01();
-//		CrawlerPage01 crawlerPage02 = new CrawlerPage01();
-//		CrawlerPage01 crawlerPage03 = new CrawlerPage01();
-//		CrawlerPage01 crawlerPage04 = new CrawlerPage01();
-//		CrawlerPage01 crawlerPage05 = new CrawlerPage01();
-		crawlerPage01.getBondsData();
+//		CrawlerPage01 crawlerPage01 = new CrawlerPage01();
+//		CrawlerPage02 crawlerPage02 = new CrawlerPage02();
+//		CrawlerPage03 crawlerPage03 = new CrawlerPage03();
+//		CrawlerPage04 crawlerPage04 = new CrawlerPage04();
+		CrawlerPage05 crawlerPage05 = new CrawlerPage05();
+//		crawlerPage01.getBondsData();
 //		crawlerPage02.getBondsData();
 //		crawlerPage03.getBondsData();
 //		crawlerPage04.getBondsData();
-//		crawlerPage05.getBondsData();
+		crawlerPage05.getBondsData();
     }
 }
