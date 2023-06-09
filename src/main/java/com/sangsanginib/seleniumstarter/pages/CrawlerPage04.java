@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -14,7 +15,9 @@ import java.util.Map;
 public class CrawlerPage04 {
 
     public void getBondsData() {
-        WebDriver driver = new ChromeDriver();
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--remote-allow-origins=*");   // 해당 부분 추가
+        ChromeDriver driver = new ChromeDriver(chromeOptions);
         driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
 
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));

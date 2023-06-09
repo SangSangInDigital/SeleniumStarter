@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -14,7 +15,9 @@ import java.util.Map;
 public class CrawlerPage02 {
 
     public void getBondsData() throws InterruptedException {
-        WebDriver driver = new ChromeDriver();
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--remote-allow-origins=*");   // 해당 부분 추가
+        ChromeDriver driver = new ChromeDriver(chromeOptions);
         driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
 
         // String title = driver.getTitle();
