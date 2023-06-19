@@ -1,0 +1,17 @@
+spring:
+  config:
+    activate:
+      on-profile: test_database
+  datasource:
+    url: jdbc:sqlserver://128.3.1.:1443;databaseName=BRIDGEFN_LC
+    username: sa
+    password: homed2022!!pq
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+server:
+  port: 8082
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+

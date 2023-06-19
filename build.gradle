@@ -3,16 +3,15 @@ plugins {
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.1.0'
 }
-
 group = 'com.sangsanginib'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
+//configurations {
+//	compileOnly {
+//		extendsFrom annotationProcessor
+//	}
+//}
 
 repositories {
 	mavenCentral()
@@ -20,13 +19,26 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.9.1'
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.10.0'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+//	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.seleniumhq.selenium:selenium-java'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+tasks {
+	jar {
+		enabled = false
+		duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+	}
+	manifest {
+		attributes["Main-Class"] = "com.sangsanginib.seleniumstarter.SeleniumStarterApplication"
+	}
 }

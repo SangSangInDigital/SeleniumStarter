@@ -5,6 +5,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -13,57 +17,61 @@ import java.util.Map;
 
 /* 한국투자증권 장외채권 데이터 크롤러 */
 public class CrawlerPage01 {
-
+    private Logger logger = LoggerFactory.getLogger(CrawlerPage01.class);
     public void getBondsData() {
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--remote-allow-origins=*");   // 해당 부분 추가
-        ChromeDriver driver = new ChromeDriver(chromeOptions);
-        driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--remote-allow-origins=*");   // Selenium WebDriver를 사용하여 다른 도메인의 브라우저에 접근
+            chromeOptions.addArguments("--headless");  // GUI 없는 Headless 모드로 실행 (필요에 따라 제외 가능)
+            chromeOptions.addArguments("--no-sandbox"); // Sandbox 모드 비활성화 -> 호환성 문제를 해결하고 Chrome 실행의 안정성을 높이기 위해
+            chromeOptions.addArguments("--disable-dev-shm-usage"); // /dev/shm 사용 비활성화 -> Docker 컨테이너 환경에서 Chrome 실행 시 메모리 제한 관련 문제를 해결
+            chromeOptions.addArguments("--lang=ko_KR.UTF-8");
+//            chromeOptions.setHeadless(false);
 
-        // String title = driver.getTitle();
-        // System.out.println(title);
-        // assertEquals("Web form", title);
+            ChromeDriver driver = new ChromeDriver(chromeOptions);
+        try{
+            logger.info("****Before driver.get****");
+            driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
+            Thread.sleep(10000);
+            logger.info("****After driver.get****");
+            logger.info(driver.getPageSource());
+            logger.info(driver.getCastIssueMessage());
+            logger.info(driver.getCurrentUrl());
+            logger.info(driver.getTitle());
+            logger.info(driver.getWindowHandle());
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
 
-        // WebElement textBox = driver.findElement(By.name("my-text"));
-        // WebElement submitButton = driver.findElement(By.cssSelector("button"));
 
-        // textBox.sendKeys("Selenium");
-        // submitButton.click();
+            logger.info("****Before driver.find****");
+            List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
+            logger.info("****After driver.find****");
 
-        // WebElement message = driver.findElement(By.id("message"));
-        // String value = message.getText();
-        // assertEquals("Received!", value);
-
-        // driver.quit();
-
-        List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
-        System.out.println(webElements.size());
-        ////*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[1]/td[2]/strong
-        //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[3]/td[2]/
-        ////*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[5]/td[2]/strong
-
-        int size = webElements.size();
-        // List<BondsList> bondsLists = new ArrayList<>();
-
-        for (int i = 1; i < size + 1; i += 2) {
-            String title = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
-            System.out.println(title);//*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[2] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[3] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[101]/td[2]/strong
-            // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[2]/td[2]
-            // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[12]/td[2]
-            // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[14]/td[2]
-            // String afterReturnRate = "";
-        }
-
-        for (int i = 2; i < size + 2; i += 2) {
-            String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
-            System.out.println(beforeReturnRate);
-        }
-
-        for (int i = 2; i < size + 2; i += 2) {
-            String afterReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i +"]/td[3]")).getText();
-            System.out.println(afterReturnRate);
+            int size = webElements.size();
+            logger.info("****size: "+size);
+            logger.info("****Before title****");
+            for (int i = 1; i < size + 1; i += 2) {
+                String title = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
+                logger.info(title);
+            }
+            logger.info("****After title****");
+            logger.info("****Before beforeReturnRate****");
+            for (int i = 2; i < size + 2; i += 2) {
+                String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
+                logger.info(beforeReturnRate);
+            }
+            logger.info("****After beforeReturnRate****");
+            logger.info("****Before afterReturnRate****");
+            for (int i = 2; i < size + 2; i += 2) {
+                String afterReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i +"]/td[3]")).getText();
+                logger.info(afterReturnRate);
+            }
+            logger.info("****After afterReturnRate****");
+        }catch (Exception e){
+            logger.error("====한국투자증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====한국투자증권 crawling error end====");
+        }finally {
+            driver.close();
         }
     }
 }
