@@ -28,7 +28,7 @@ public class SeleniumStarterApplication {
     }
 
     public static void crawling() {
-//		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
+		System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
 //		CrawlerPage01 crawlerPage01 = new CrawlerPage01();
 //		CrawlerPage02 crawlerPage02 = new CrawlerPage02();
 //		CrawlerPage03 crawlerPage03 = new CrawlerPage03();
