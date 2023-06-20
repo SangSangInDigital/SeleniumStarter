@@ -1,15 +1,19 @@
 package com.sangsanginib.seleniumstarter.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,19 +29,25 @@ public class CrawlerPage01 {
             chromeOptions.addArguments("--no-sandbox"); // Sandbox 모드 비활성화 -> 호환성 문제를 해결하고 Chrome 실행의 안정성을 높이기 위해
             chromeOptions.addArguments("--disable-dev-shm-usage"); // /dev/shm 사용 비활성화 -> Docker 컨테이너 환경에서 Chrome 실행 시 메모리 제한 관련 문제를 해결
             chromeOptions.addArguments("--lang=ko_KR.UTF-8");
-//            chromeOptions.setHeadless(false);
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 
-            ChromeDriver driver = new ChromeDriver(chromeOptions);
+
+//            DesiredCapabilities caps = new DesiredCapabilities();
+//            caps.setPlatform(Platform.LINUX); // 사용하는 플랫폼에 맞게 설정
+//            chromeOptions.merge(caps);
         try{
-            logger.info("****Before driver.get****");
-            driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
-            Thread.sleep(10000);
-            logger.info("****After driver.get****");
-            logger.info(driver.getPageSource());
-            logger.info(driver.getCastIssueMessage());
+            logger.info("****Before remoteDriver1.get****");
+//            ChromeDriver driver = new ChromeDriver(chromeOptions);
+//            RemoteWebDriver driver = driver;
+            RemoteWebDriver driver = new RemoteWebDriver((new URL( "http://127.0.0.1:4444/wd/hub")), capabilities);
+//            RemoteWebDriver driver2 = new RemoteWebDriver((new URL( "http://127.0.0.1:4444/wd/hub")), capabilities);
+            logger.info("****Before driver1.get****");
             logger.info(driver.getCurrentUrl());
-            logger.info(driver.getTitle());
-            logger.info(driver.getWindowHandle());
+            driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
+            logger.info(driver.getCurrentUrl());
+            Thread.sleep(10000);
+            logger.info("****After driver1.get****");
 
 
 
@@ -70,8 +80,6 @@ public class CrawlerPage01 {
             logger.error(e.toString());
             logger.error(e.getMessage());
             logger.error("====한국투자증권 crawling error end====");
-        }finally {
-            driver.close();
         }
     }
 }
