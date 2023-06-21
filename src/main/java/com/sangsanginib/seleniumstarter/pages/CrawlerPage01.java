@@ -13,7 +13,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,37 +26,58 @@ import java.util.Map;
 public class CrawlerPage01 {
     private Logger logger = LoggerFactory.getLogger(CrawlerPage01.class);
     public void getBondsData() {
+        try {
+
+            // ChromeOptions 설정
             ChromeOptions chromeOptions = new ChromeOptions();
-            chromeOptions.addArguments("--remote-allow-origins=*");   // Selenium WebDriver를 사용하여 다른 도메인의 브라우저에 접근
-            chromeOptions.addArguments("--headless");  // GUI 없는 Headless 모드로 실행 (필요에 따라 제외 가능)
+            chromeOptions.addArguments("--remote-allow-origins=*"); // Selenium WebDriver를 사용하여 다른 도메인의 브라우저에 접근
+            chromeOptions.addArguments("--headless=new"); // GUI 없는 Headless 모드로 실행 (필요에 따라 제외 가능)
             chromeOptions.addArguments("--no-sandbox"); // Sandbox 모드 비활성화 -> 호환성 문제를 해결하고 Chrome 실행의 안정성을 높이기 위해
             chromeOptions.addArguments("--disable-dev-shm-usage"); // /dev/shm 사용 비활성화 -> Docker 컨테이너 환경에서 Chrome 실행 시 메모리 제한 관련 문제를 해결
-            chromeOptions.addArguments("--lang=ko_KR.UTF-8");
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 
+            // 크롤링 작업 수행
+            logger.info("****remoteDriver1****");
+            ChromeDriver driver = new ChromeDriver(chromeOptions);
 
-//            DesiredCapabilities caps = new DesiredCapabilities();
-//            caps.setPlatform(Platform.LINUX); // 사용하는 플랫폼에 맞게 설정
-//            chromeOptions.merge(caps);
-        try{
-            logger.info("****Before remoteDriver1.get****");
-//            ChromeDriver driver = new ChromeDriver(chromeOptions);
-//            RemoteWebDriver driver = driver;
-            RemoteWebDriver driver = new RemoteWebDriver((new URL( "http://127.0.0.1:4444/wd/hub")), capabilities);
-//            RemoteWebDriver driver2 = new RemoteWebDriver((new URL( "http://127.0.0.1:4444/wd/hub")), capabilities);
             logger.info("****Before driver1.get****");
-            logger.info(driver.getCurrentUrl());
             driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
-            logger.info(driver.getCurrentUrl());
+
             Thread.sleep(10000);
-            logger.info("****After driver1.get****");
+            //status 값 확인
+            logger.info("**********Http response code start*****" );
+            TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType){}
+                        public void checkServerTrusted(X509Certificate[] certs, String authType){}
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Create all-trusting host name verifier
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session){
+                    return true;
+                }
+            };
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+            HttpURLConnection cn = (HttpURLConnection) new URL(driver.getCurrentUrl()).openConnection();
+            cn.setRequestMethod("HEAD");
+            cn.connect();
+            int res = cn.getResponseCode();
+            logger.info("**********Http response code: " + res);
 
 
-
-            logger.info("****Before driver.find****");
+            //데이터 크롤링
             List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
-            logger.info("****After driver.find****");
 
             int size = webElements.size();
             logger.info("****size: "+size);
@@ -75,7 +99,9 @@ public class CrawlerPage01 {
                 logger.info(afterReturnRate);
             }
             logger.info("****After afterReturnRate****");
-        }catch (Exception e){
+            // WebDriver 종료
+            driver.quit();
+        } catch (Exception e) {
             logger.error("====한국투자증권 crawling error start====");
             logger.error(e.toString());
             logger.error(e.getMessage());

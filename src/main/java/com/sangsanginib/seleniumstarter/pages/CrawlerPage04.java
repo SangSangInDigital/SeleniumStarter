@@ -1,71 +1,72 @@
 package com.sangsanginib.seleniumstarter.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import javax.net.ssl.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.Duration;
-import java.util.ArrayList;
+import java.security.cert.X509Certificate;
 import java.util.List;
-import java.util.Map;
 
 /* 삼성증권 장외채권 데이터 크롤러 */
 public class CrawlerPage04 {
     private Logger logger = LoggerFactory.getLogger(CrawlerPage01.class);
     public void getBondsData() {
-
-        // Xvfb 실행 명령어 설정
-        String xvfbCommand = "Xvfb :99 -ac -screen 0 1280x1024x16";
-
-        // WebDriver 경로 설정
-        String driverPath = "/home/developer/chrome/chromedriver";
-
-        // Xvfb 실행
         try {
-//            Runtime.getRuntime().exec(xvfbCommand);
-//            Thread.sleep(2000); // Xvfb가 실행되기를 기다림
-//            DesiredCapabilities caps = new DesiredCapabilities();
-//            caps.setPlatform(Platform.LINUX); // 사용하는 플랫폼에 맞게 설정
 
             // ChromeOptions 설정
             ChromeOptions chromeOptions = new ChromeOptions();
-//            chromeOptions.merge(caps);
-//            chromeOptions.addArguments("--display=:99"); // Xvfb 디스플레이 설정
-//            chromeOptions.setBinary("/usr/bin/google-chrome-stable"); // Chrome 실행 파일 경로 설정
-            chromeOptions.addArguments("--remote-allow-origins=*");
-            chromeOptions.addArguments("--headless");
-            chromeOptions.addArguments("--no-sandbox");
-            chromeOptions.addArguments("--disable-dev-shm-usage");
-            // WebDriver 설정
-//            System.setProperty("webdriver.chrome.driver", driverPath);
-//            WebDriver driver = new ChromeDriver(chromeOptions);
+            chromeOptions.addArguments("--remote-allow-origins=*"); //크롬 실행하기 위해서 꼭 필요
+            chromeOptions.addArguments("--headless=new"); // GUI 없는 Headless 모드로 실행 (필요에 따라 제외 가능)
+            chromeOptions.addArguments("--no-sandbox"); // Sandbox 모드 비활성화 -> 호환성 문제를 해결하고 Chrome 실행의 안정성을 높이기 위해
+            chromeOptions.addArguments("--disable-dev-shm-usage"); // /dev/shm 사용 비활성화 -> Docker 컨테이너 환경에서 Chrome 실행 시 메모리 제한 관련 문제를 해결
 
             // 크롤링 작업 수행
-            logger.info("****수정됨****");
             logger.info("****remoteDriver4****");
             ChromeDriver driver = new ChromeDriver(chromeOptions);
 
-//            WebDriver driver = new RemoteWebDriver((new URL( "https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100")), chromeOptions);
             logger.info("****Before driver4.get****");
-            logger.info(driver.getCurrentUrl());
-            driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
-            logger.info(driver.getCurrentUrl());
+            driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
+
             Thread.sleep(10000);
+            //status 값 확인
+            logger.info("**********Http response code start*****" );
+            TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType){}
+                        public void checkServerTrusted(X509Certificate[] certs, String authType){}
+                    }
+            };
 
+            // Install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
-            logger.info("****Before driver.find****");
+            // Create all-trusting host name verifier
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session){
+                    return true;
+                }
+            };
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+            HttpURLConnection cn = (HttpURLConnection) new URL(driver.getCurrentUrl()).openConnection();
+            cn.setRequestMethod("HEAD");
+            cn.connect();
+            int res = cn.getResponseCode();
+            logger.info("**********Http response code: " + res);
+
             List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
-            logger.info("****After driver.find****");
 
             int size = webElements.size();
             logger.info("****size: "+size);
@@ -95,108 +96,5 @@ public class CrawlerPage04 {
             logger.error(e.getMessage());
             logger.error("====한국투자증권 crawling error end====");
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        String xvfbCommand = "Xvfb :99 -screen 0 1024x768x24 -fbdir /var/run";
-//        logger.info("****ProcessBuilder****");
-//        ProcessBuilder xvfbProcessBuilder = new ProcessBuilder("bash", "-c", xvfbCommand);
-//        try {
-//            Process xvfbProcess = xvfbProcessBuilder.start();
-//            Thread.sleep(2000); // Xvfb가 시작될 때까지 잠시 대기
-//            logger.info("****ProcessBuilder start****");
-//
-//            // ChromeDriver 설정
-//            ChromeDriverService service = new ChromeDriverService.Builder()
-//                    .usingDriverExecutable(new File("/home/developer/chrome/chromedriver"))
-//                    .usingAnyFreePort()
-//                    .build();
-//            logger.info("****ChromeDriverService****");
-//            // ChromeOptions 설정
-//            ChromeOptions chromeOptions = new ChromeOptions();
-//            chromeOptions.addArguments("--remote-allow-origins=*");
-//            chromeOptions.addArguments("--headless");
-//            chromeOptions.addArguments("--no-sandbox");
-//            chromeOptions.addArguments("--disable-dev-shm-usage");
-//
-//            // WebDriver 생성
-//            WebDriver driver = new ChromeDriver(service, chromeOptions);
-//            logger.info("****WebDriver****");
-//            // 크롤링 로직 작성
-//            // ...
-//            driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
-//            logger.info("****driver****");
-//            logger.info(driver.getPageSource());
-//            // WebDriver 종료
-//            driver.quit();
-//
-//            // Xvfb 종료
-//            xvfbProcess.destroy();
-//        } catch (Exception e) {
-//            logger.error("====한국투자증권 crawling error start====");
-//            logger.error(e.toString());
-//            logger.error(e.getMessage());
-//            logger.error("====한국투자증권 crawling error end====");
-//        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        ChromeOptions chromeOptions = new ChromeOptions();
-//        chromeOptions.addArguments("--remote-allow-origins=*");   // 해당 부분 추가
-//        chromeOptions.addArguments("--headless");
-//        chromeOptions.addArguments("--no-sandbox");
-//        chromeOptions.addArguments("--disable-dev-shm-usage");
-//        ChromeDriver driver = new ChromeDriver(chromeOptions);
-//        try{
-//            driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
-//
-//            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
-//
-//            driver.switchTo().frame("frmContent");
-//
-//            logger.info("****삼성증권 start****");
-//            logger.info(driver.getPageSource());
-//            logger.info("****삼성증권 end****");
-//        }catch (Exception e){
-//            logger.error("====한국투자증권 crawling error start====");
-//            logger.error(e.toString());
-//            logger.error(e.getMessage());
-//            logger.error("====한국투자증권 crawling error end====");
-//        }finally {
-//            driver.close();
-//        }
     }
 }
