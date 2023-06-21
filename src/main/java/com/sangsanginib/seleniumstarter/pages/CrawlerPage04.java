@@ -34,37 +34,6 @@ public class CrawlerPage04 {
             driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
 
             Thread.sleep(10000);
-            //status 값 확인
-            logger.info("**********Http response code start*****" );
-            TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return null;
-                        }
-                        public void checkClientTrusted(X509Certificate[] certs, String authType){}
-                        public void checkServerTrusted(X509Certificate[] certs, String authType){}
-                    }
-            };
-
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session){
-                    return true;
-                }
-            };
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-            HttpURLConnection cn = (HttpURLConnection) new URL(driver.getCurrentUrl()).openConnection();
-            cn.setRequestMethod("HEAD");
-            cn.connect();
-            int res = cn.getResponseCode();
-            logger.info("**********Http response code: " + res);
 
             List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
 
