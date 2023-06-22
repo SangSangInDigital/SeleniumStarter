@@ -1,30 +1,26 @@
 package com.sangsanginib.seleniumstarter.pages;
 
+import com.sangsanginib.seleniumstarter.entity.CrawlingData;
+import com.sangsanginib.seleniumstarter.repository.CrawlingRepository;
+import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.net.ssl.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.cert.X509Certificate;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /* 한국투자증권 장외채권 데이터 크롤러 */
+//@Service
+//@RequiredArgsConstructor
 public class CrawlerPage01 {
     private Logger logger = LoggerFactory.getLogger(CrawlerPage01.class);
+//    private final CrawlingRepository crawlingRepository;
     public void getBondsData() {
         try {
 
@@ -49,12 +45,15 @@ public class CrawlerPage01 {
 
             int size = webElements.size();
             logger.info("****size: "+size);
-            logger.info("****Before title****");
+            logger.info("****Before crawling****");
             for (int i = 1; i < size + 1; i += 2) {
+//                CrawlingData data = new CrawlingData();
                 String title = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
                 logger.info(title);
+//                data.setCompany(title);
+//                crawlingRepository.save(data);
             }
-            logger.info("****After title****");
+            logger.info("****After crawling****");
             logger.info("****Before beforeReturnRate****");
             for (int i = 2; i < size + 2; i += 2) {
                 String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();

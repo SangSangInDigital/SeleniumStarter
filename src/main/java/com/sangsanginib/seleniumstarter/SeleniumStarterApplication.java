@@ -3,6 +3,7 @@ package com.sangsanginib.seleniumstarter;
 import com.sangsanginib.seleniumstarter.pages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -12,8 +13,8 @@ import javax.swing.*;
 @SpringBootApplication
 public class SeleniumStarterApplication {
 	public static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-//    public static final String WEB_DRIVER_PATH = "C:\\chromedriver.exe";
-	public static final String WEB_DRIVER_PATH = "/home/developer/chrome/chromedriver";
+    public static final String WEB_DRIVER_PATH = "C:\\chromedriver.exe";
+//	public static final String WEB_DRIVER_PATH = "/home/developer/chrome/chromedriver";
     private static Logger logger = LoggerFactory.getLogger(SeleniumStarterApplication.class);
     public static void main(String[] args) {
         try{
