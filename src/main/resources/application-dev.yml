@@ -6,6 +6,13 @@ spring:
     username: sa
     password: homed2022!!pq
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
 
 server:
   port: 8082
