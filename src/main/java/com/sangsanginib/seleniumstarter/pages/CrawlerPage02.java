@@ -40,15 +40,19 @@ public class CrawlerPage02 {
         int maxAttempts = 10;
         int attemptCount = 0;
 
-        boolean elementFound = false;
-        while (!elementFound && attemptCount < maxAttempts) {
+        while (attemptCount < maxAttempts) {
             try {
                 WebElement element = driver.findElement(By.xpath("//*[@id=\"main\"]/button"));
-                element.click();
-                elementFound = true;
+                System.out.println("더보기 버튼 클릭########################");
+                if (element.isDisplayed() && element.isEnabled()) {
+                    element.click();
+                    Thread.sleep(1000);
+                    attemptCount++;
+                } else {
+                    break;
+                }
             } catch (org.openqa.selenium.NoSuchElementException e) {
-                Thread.sleep(1000);
-                attemptCount++;
+                break; // 루프 종료
             }
         }
 
@@ -57,10 +61,10 @@ public class CrawlerPage02 {
 
         int size = webElements.size();
 
-        for (int i = 1; i < size + 1; i ++) {
-            String title = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr["+ i +"]/td[2]/a")).getText();
+        for (int i = 1; i < size + 1; i++) {
+            String title = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[2]/a")).getText();
             System.out.println(title);//*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[2] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[3] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[101]/td[2]/strong
-            String endDate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr["+ i +"]/td[3]")).getText();
+            String endDate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
             System.out.println(endDate);
             // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[2]/td[2]
             // /html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[12]/td[2]
