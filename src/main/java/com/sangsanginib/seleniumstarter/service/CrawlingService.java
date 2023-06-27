@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -71,6 +72,38 @@ public class CrawlingService {
     @Transactional(readOnly = true)
     public void crawlerPage02(ChromeDriver driver) {
         driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
+
+        int maxAttempts = 10;
+        int attemptCount = 0;
+
+        while (attemptCount < maxAttempts) {
+            try {
+                WebElement element = driver.findElement(By.xpath("//*[@id=\"main\"]/button"));
+                System.out.println("더보기 버튼 클릭########################");
+                if (element.isDisplayed() && element.isEnabled()) {
+                    element.click();
+                    driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
+                    attemptCount++;
+                } else {
+                    break;
+                }
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                break; // 루프 종료
+            }
+        }
+
+        List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"main\"]/table/tbody/tr"));
+        System.out.println(webElements.size());
+
+        int size = webElements.size();
+
+        for (int i = 1; i < size + 1; i++) {
+            String title = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[2]/a")).getText();
+            System.out.println(title);//*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[2] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[3] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[101]/td[2]/strong
+            String endDate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
+            System.out.println(endDate);
+        }
     }
     
     @Transactional(readOnly = true)
