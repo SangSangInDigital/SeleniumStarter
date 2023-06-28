@@ -18,24 +18,10 @@ public class SeleniumStarterApplication {
         try {
             ConfigurableApplicationContext context = SpringApplication.run(SeleniumStarterApplication.class, args);
             context.getBean(SeleniumStarterApplication.class);
-//            crawling();
-//            context.close();
         } catch (Exception e) {
             logger.error(e.toString());
         }
 
     }
 
-    public static void crawling() {
-        // WebDriver 설정
-        System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 호출할 컨트롤러의 URL
-        String url = "http://localhost:8082/crawling";
-
-        // 컨트롤러 호출
-        restTemplate.getForObject(url, String.class);
-
-    }
 }
