@@ -40,18 +40,33 @@ public class CrawlingService {
             for (int i = 1; i < size + 1; i += 2) {
                 CrawlingDatas data = new CrawlingDatas();
                 String fdName = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
+                String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[4]")).getText();
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[8]")).getText();
+                String crdtRtng = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
+
+                String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i+1) + "]/td[1]/span")).getText();
+                String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i+1) + "]/td[2]")).getText();
+                String taxrtRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i+1) + "]/td[3]")).getText();
                 logger.info(fdName);
+                data.setCompany("한국투자증권");
                 data.setFdName(fdName);
+                data.setExDt(exDt);
+                data.setDpstCnvrsRtrnRate(dpstCnvrsRtrnRate);
+                data.setCrdtRtng(crdtRtng);
+                data.setRmnngDays(rmnngDays);
+                data.setRtrnRate(rtrnRate);
+                data.setTaxrtRate(taxrtRate);
+
                 list.add(data);
             }
-            for (int i = 2; i < size + 2; i += 2) {
-                String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
-                logger.info(beforeReturnRate);
-            }
-            for (int i = 2; i < size + 2; i += 2) {
-                String afterReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[3]")).getText();
-                logger.info(afterReturnRate);
-            }
+//            for (int i = 2; i < size + 2; i += 2) {
+//                String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
+//                logger.info(beforeReturnRate);
+//            }
+//            for (int i = 2; i < size + 2; i += 2) {
+//                String afterReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[3]")).getText();
+//                logger.info(afterReturnRate);
+//            }
             logger.info("****after crawling****");
             // WebDriver 종료
             driver.quit();
