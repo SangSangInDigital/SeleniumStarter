@@ -112,4 +112,27 @@ public class CrawlingService {
         driver.get("https://www.kbsec.com/go.able?linkcd=s010602010000");
     }
 
+    public void crawlerPage06(ChromeDriver driver) {
+        // 회사채
+        driver.get("https://www.myasset.com/myasset/mall/item/bond/MA_0602000_T1.cmd");
+        // TO DO:
+
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(5000));
+
+        // 국공채
+        driver.get("https://www.myasset.com/myasset/mall/item/bond/MA_0602000_T2.cmd");
+        // TO DO:
+    }
+
+    public void crawlerPage07(ChromeDriver driver) {
+        driver.get("https://www.kiwoom.com/wm/bnd/od010/bndOdListView");
+        // TO DO:
+
+    }
+
+    public void crawlerPage08(ChromeDriver driver) {
+        driver.get("https://www.daishin.com/g.ds?m=1019&p=1210&v=797");
+        // TO DO:
+
+    }
 }
