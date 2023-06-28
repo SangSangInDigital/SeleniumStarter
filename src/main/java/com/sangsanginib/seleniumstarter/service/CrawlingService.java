@@ -60,14 +60,6 @@ public class CrawlingService {
 
                 list.add(data);
             }
-//            for (int i = 2; i < size + 2; i += 2) {
-//                String beforeReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
-//                logger.info(beforeReturnRate);
-//            }
-//            for (int i = 2; i < size + 2; i += 2) {
-//                String afterReturnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[3]")).getText();
-//                logger.info(afterReturnRate);
-//            }
             logger.info("****after crawling****");
             // WebDriver 종료
             driver.quit();
