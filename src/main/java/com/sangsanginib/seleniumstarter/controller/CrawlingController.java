@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class CrawlingController {
     private Logger logger = LoggerFactory.getLogger(CrawlingController.class);
     private final CrawlingService crawlingService;
-    @PostMapping("/crawling01")
+    @GetMapping("/crawling01")
     public ResponseEntity<List<CrawlingDatas>> crawling01(){
         logger.info("******controller start******");
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -30,10 +31,13 @@ public class CrawlingController {
 
         ChromeDriver driver = new ChromeDriver(chromeOptions);
         List<CrawlingDatas>  dataList = crawlingService.crawlerPage01(driver);
-//        crawlingService.crawlerPage02(driver);
-//        crawlingService.crawlerPage03(driver);
-//        crawlingService.crawlerPage04(driver);
-//        crawlingService.crawlerPage05(driver);
+//        dataList.addAll(crawlingService.crawlerPage02(driver));
+//        dataList.addAll(crawlingService.crawlerPage03(driver));
+//        dataList.addAll(crawlingService.crawlerPage04(driver));
+//        dataList.addAll(crawlingService.crawlerPage05(driver));
+//        dataList.addAll(crawlingService.crawlerPage06(driver));
+//        dataList.addAll(crawlingService.crawlerPage07(driver));
+//        dataList.addAll(crawlingService.crawlerPage08(driver));
         logger.info("******controller end******");
         return ResponseEntity.status(HttpStatus.OK).body(dataList);
     }

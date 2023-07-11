@@ -72,7 +72,8 @@ public class CrawlingService {
         return list;
     }
 
-    public void crawlerPage02(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage02(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
 
@@ -106,21 +107,30 @@ public class CrawlingService {
             String endDate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
             System.out.println(endDate);
         }
+        return list;
     }
 
-    public void crawlerPage03(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage03(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
+
+        return list;
     }
 
-    public void crawlerPage04(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage04(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://securities.miraeasset.com/hks/hks4036/r01.do");
+        return list;
     }
 
-    public void crawlerPage05(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage05(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://www.kbsec.com/go.able?linkcd=s010602010000");
+        return list;
     }
 
-    public void crawlerPage06(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage06(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         // 회사채
         driver.get("https://www.myasset.com/myasset/mall/item/bond/MA_0602000_T1.cmd");
         // TO DO:
@@ -130,17 +140,22 @@ public class CrawlingService {
         // 국공채
         driver.get("https://www.myasset.com/myasset/mall/item/bond/MA_0602000_T2.cmd");
         // TO DO:
+        return list;
     }
 
-    public void crawlerPage07(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage07(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://www.kiwoom.com/wm/bnd/od010/bndOdListView");
         // TO DO:
 
+        return list;
     }
 
-    public void crawlerPage08(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerPage08(ChromeDriver driver) {
+        List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://www.daishin.com/g.ds?m=1019&p=1210&v=797");
         // TO DO:
 
+        return list;
     }
 }
