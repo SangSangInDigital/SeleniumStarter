@@ -49,6 +49,11 @@ public class CrawlingService {
                 String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[2]")).getText();
                 String taxrtRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[3]")).getText();
                 logger.info(fdName);
+
+                dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
+                rtrnRate = splitPercent(rtrnRate);
+                taxrtRate = splitPercent(taxrtRate);
+
                 data.setCompany("한국투자증권");
                 data.setFdName(fdName);
                 data.setExDt(exDt);
@@ -157,5 +162,12 @@ public class CrawlingService {
         // TO DO:
 
         return list;
+    }
+
+    public String splitPercent(String str){
+        if(str.contains("%")){
+            str = str.substring(0,str.length()-1);
+        }
+        return str;
     }
 }
