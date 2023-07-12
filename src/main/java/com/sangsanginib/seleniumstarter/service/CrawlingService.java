@@ -43,12 +43,13 @@ public class CrawlingService {
                 String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[4]")).getText();
                 String dpstCnvrsRtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[8]")).getText();
                 String rareString = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
+                logger.info(fdName);
+                logger.info(rareString);
                 String[] splitStrings = rareString.split("[:,\\n]");
-                String crdtRtng = splitStrings[3].trim();
+                String crdtRtng = splitStrings[splitStrings.length-2].trim();
                 String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[1]/span")).getText();
                 String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[2]")).getText();
                 String taxrtRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[3]")).getText();
-                logger.info(fdName);
 
                 dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
                 rtrnRate = splitPercent(rtrnRate);
