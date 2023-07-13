@@ -37,8 +37,8 @@ public class CrawlingController {
         driver = new ChromeDriver(chromeOptions);
         dataList.addAll(crawlingService.crawlerPage02(driver));
 
-//        driver = new ChromeDriver(chromeOptions);
-//        dataList.addAll(crawlingService.crawlerPage03(driver));
+        driver = new ChromeDriver(chromeOptions);
+        dataList.addAll(crawlingService.crawlerPage03(driver));
 
 //        driver = new ChromeDriver(chromeOptions);
 //        dataList.addAll(crawlingService.crawlerPage04(driver));

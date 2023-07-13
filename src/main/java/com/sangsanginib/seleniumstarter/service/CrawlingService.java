@@ -3,9 +3,9 @@ package com.sangsanginib.seleniumstarter.service;
 import com.sangsanginib.seleniumstarter.dto.CrawlingDatas;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class CrawlingService {
                 //만기일
                 String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[4]")).getText();
                 //잔존기간
-                String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[1]/span")).getText();
+                String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[1]")).getText();
                 //매수수익률
                 String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[2]")).getText();
                 rtrnRate = splitPercent(rtrnRate);
@@ -108,7 +108,7 @@ public class CrawlingService {
                 //만기일
                 String exDt = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
                 //잔존기간
-                String rmnngDays = "";
+                String rmnngDays = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[4]")).getText();
                 //매수수익률
                 String rtrnRate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[5]")).getText();
                 rtrnRate = splitPercent(rtrnRate);
@@ -141,7 +141,59 @@ public class CrawlingService {
     public List<CrawlingDatas> crawlerPage03(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
+        try{
+            driver.switchTo().frame("frmContent");
+            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(10000));
 
+
+            for(int i =0 ; i<10;i++){
+                // 스크롤할 div 요소 가져오기
+                WebElement scrollDiv = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div"));
+                // JavaScript 를 실행하여 스크롤을 제일 밑으로 내리기
+                JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+                jsExecutor.executeScript("arguments[0].scrollTo(0, arguments[0].scrollHeight)", scrollDiv);
+                Thread.sleep(1000);
+            }
+
+
+            List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr"));
+            logger.info("****Before 삼성증권 crawling****");
+            int size = webElements.size();
+
+            for (int i = 1; i < size + 1; i += 3) {
+                //종목명
+                String fdName = driver.findElement(By.xpath("/html/body/div[1]/div[3]/div[3]/div/div/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[2]/a")).getText().split("[:,\\n]")[0];
+                //만기일, 잔존기간
+                String rareString = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[3]")).getText();
+                String[] splitStrings = rareString.split("[:,\\n]");
+                String exDt = splitStrings[1].replaceAll("-",".").substring(1,splitStrings[1].length()-1);
+                String rmnngDays = splitStrings[0];
+                //매수수익률
+                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[4]/span/span")).getText();
+                rtrnRate = splitPercent(rtrnRate.substring(1,rtrnRate.length()-1));
+                //예금환산수익률
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[6]")).getText();
+                dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
+                //세후수익률
+                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[7]")).getText();
+                taxrtRate = splitPercent(taxrtRate);
+                //신용등급
+                String crdtRtng = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[10]")).getText();
+
+
+                logger.info("삼성증권=="+fdName);
+
+                CrawlingDatas data  = setData("삼성증권",fdName,exDt,rmnngDays,rtrnRate,dpstCnvrsRtrnRate,taxrtRate,crdtRtng);
+
+                list.add(data);
+            }
+
+        }catch (Exception e){
+            logger.error("====삼성투자증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====삼성투자증권 crawling error end====");
+        }
         return list;
     }
 
