@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CrawlingService {
-    private Logger logger = LoggerFactory.getLogger(CrawlingService.class);
+    private final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
 
     public List<CrawlingDatas> crawlerPage01(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         try {
 
             // 크롤링 작업 수행
-            logger.info("****remoteDriver1****");
-
-            logger.info("****Before driver1.get****");
             driver.get("https://truefriend.com/main/mall/opendecision/DecisionInfo.jsp?cmd=TF02da010100");
 
             Thread.sleep(10000);
@@ -34,39 +32,37 @@ public class CrawlingService {
             List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"content\"]/div[2]/div/div[2]/table/tbody/tr"));
 
             int size = webElements.size();
-            logger.info("****size: " + size);
-            logger.info("****Before crawling****");
+            logger.info("****Before 한국투자증권 crawling****");
 
             for (int i = 1; i < size + 1; i += 2) {
-                CrawlingDatas data = new CrawlingDatas();
+                //종목명
                 String fdName = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
+                //만기일
                 String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[4]")).getText();
+                //잔존기간
+                String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[1]/span")).getText();
+                //매수수익률
+                String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[2]")).getText();
+                rtrnRate = splitPercent(rtrnRate);
+                //예금환산수익률
                 String dpstCnvrsRtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[8]")).getText();
+                dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
+                //세후수익률
+                String taxrtRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[3]")).getText();
+                taxrtRate = splitPercent(taxrtRate);
+                //신용등급
                 String rareString = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]")).getText();
-                logger.info(fdName);
-                logger.info(rareString);
                 String[] splitStrings = rareString.split("[:,\\n]");
                 String crdtRtng = splitStrings[splitStrings.length-2].trim();
-                String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[1]/span")).getText();
-                String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[2]")).getText();
-                String taxrtRate = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[3]")).getText();
 
-                dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
-                rtrnRate = splitPercent(rtrnRate);
-                taxrtRate = splitPercent(taxrtRate);
 
-                data.setCompany("한국투자증권");
-                data.setFdName(fdName);
-                data.setExDt(exDt);
-                data.setDpstCnvrsRtrnRate(dpstCnvrsRtrnRate);
-                data.setCrdtRtng(crdtRtng);
-                data.setRmnngDays(rmnngDays);
-                data.setRtrnRate(rtrnRate);
-                data.setTaxrtRate(taxrtRate);
+                logger.info("한국투자증권=="+fdName);
+
+                CrawlingDatas data  = setData("한국투자증권",fdName,exDt,rmnngDays,rtrnRate,dpstCnvrsRtrnRate,taxrtRate,crdtRtng);
 
                 list.add(data);
             }
-            logger.info("****after crawling****");
+            logger.info("****after 한국투자증권 crawling****");
             // WebDriver 종료
             driver.quit();
         } catch (Exception e) {
@@ -88,8 +84,8 @@ public class CrawlingService {
 
         while (attemptCount < maxAttempts) {
             try {
+                 // 더보기 버튼 클릭
                 WebElement element = driver.findElement(By.xpath("//*[@id=\"main\"]/button"));
-                System.out.println("더보기 버튼 클릭########################");
                 if (element.isDisplayed() && element.isEnabled()) {
                     element.click();
                     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
@@ -97,24 +93,50 @@ public class CrawlingService {
                 } else {
                     break;
                 }
+
             } catch (org.openqa.selenium.NoSuchElementException e) {
                 break; // 루프 종료
             }
         }
+        try {
+            List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"main\"]/table/tbody/tr"));
+            logger.info("****Before 신한투자증권 crawling****");
+            int size = webElements.size();
+            for (int i = 1; i < size + 1; i++) {
+                //종목명
+                String fdName = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[2]/a")).getText();
+                //만기일
+                String exDt = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
+                //잔존기간
+                String rmnngDays = "";
+                //매수수익률
+                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[5]")).getText();
+                rtrnRate = splitPercent(rtrnRate);
+                //예금환산수익률
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[7]")).getText();
+                dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
+                //세후수익률
+                String taxrtRate = "";
+                //신용등급
+                String crdtRtng = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[8]")).getText();
 
-        List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"main\"]/table/tbody/tr"));
-        System.out.println(webElements.size());
+                logger.info("신한투자증권==" + fdName);
 
-        int size = webElements.size();
+                CrawlingDatas data = setData("신한투자증권", fdName, exDt, rmnngDays, rtrnRate, dpstCnvrsRtrnRate, taxrtRate, crdtRtng);
+                list.add(data);
 
-        for (int i = 1; i < size + 1; i++) {
-            String title = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[2]/a")).getText();
-            System.out.println(title);//*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[2] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[102]/td[3] //*[@id="content"]/div[2]/div/div[2]/table/tbody/tr[101]/td[2]/strong
-            String endDate = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
-            System.out.println(endDate);
+            }
+            logger.info("****After 신한투자증권 crawling****");
+        }catch (Exception e){
+            logger.error("====신한투자증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====신한투자증권 crawling error end====");
         }
         return list;
     }
+
+
 
     public List<CrawlingDatas> crawlerPage03(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
@@ -170,5 +192,30 @@ public class CrawlingService {
             str = str.substring(0,str.length()-1);
         }
         return str;
+    }
+
+    private CrawlingDatas setData(String company, String fdName, String exDt, String rmnngDays,
+                                  String rtrnRate, String dpstCnvrsRtrnRate, String taxrtRate, String crdtRtng) {
+
+        CrawlingDatas data = new CrawlingDatas();
+
+        //회사명
+        data.setCompany(company);
+        //종목명
+        data.setFdName(fdName);
+        //만기일
+        data.setExDt(exDt);
+        //잔존기간
+        data.setRmnngDays(rmnngDays);
+        //매수수익률
+        data.setRtrnRate(rtrnRate);
+        //예금환산수익률
+        data.setDpstCnvrsRtrnRate(dpstCnvrsRtrnRate);
+        //세후수익률
+        data.setTaxrtRate(taxrtRate);
+        //신용등급
+        data.setCrdtRtng(crdtRtng);
+
+        return data;
     }
 }
