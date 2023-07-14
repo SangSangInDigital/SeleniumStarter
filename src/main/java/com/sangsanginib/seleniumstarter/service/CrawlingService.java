@@ -76,9 +76,15 @@ public class CrawlingService {
 
     public List<CrawlingDatas> crawlerPage02(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
-        driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
-
+        try {
+            driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
+            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
+        }catch (Exception e){
+            logger.error("====신한투자증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====신한투자증권 crawling error end====");
+        }
         int maxAttempts = 10;
         int attemptCount = 0;
 
@@ -95,6 +101,10 @@ public class CrawlingService {
                 }
 
             } catch (org.openqa.selenium.NoSuchElementException e) {
+                logger.error("====신한투자증권 crawling error start====");
+                logger.error(e.toString());
+                logger.error(e.getMessage());
+                logger.error("====신한투자증권 crawling error end====");
                 break; // 루프 종료
             }
         }
@@ -104,7 +114,7 @@ public class CrawlingService {
             int size = webElements.size();
             for (int i = 1; i < size + 1; i++) {
                 //종목명
-                String fdName = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[2]/a")).getText();
+                String fdName = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[2]/a")).getText();
                 //만기일
                 String exDt = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
                 //잔존기간
@@ -140,8 +150,8 @@ public class CrawlingService {
 
     public List<CrawlingDatas> crawlerPage03(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
-        driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
         try{
+            driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
             driver.switchTo().frame("frmContent");
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(10000));
 
@@ -199,7 +209,49 @@ public class CrawlingService {
 
     public List<CrawlingDatas> crawlerPage04(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
-        driver.get("https://securities.miraeasset.com/hks/hks4036/r01.do");
+        try{
+            driver.get("https://securities.miraeasset.com/hks/hks4036/r01.do");
+
+            List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"list\"]/tbody/tr"));
+            int size = webElements.size();
+
+            logger.info("****Before 미래에셋 crawling****");
+            for (int i = 1; i < size + 1; i++) {
+                //종목명
+                String fdName = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[2]/a")).getText();
+                //만기일
+                String exDt = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[5]")).getText();
+                //잔존기간
+                String year = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[3]")).getText();
+                String day = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[4]")).getText();
+                String rmnngDays ="";
+                if(year.equals("0")){
+                    rmnngDays = day+"일";
+                }else{
+                    rmnngDays = year+"년"+day+"일";
+                }
+                //매수수익률
+                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[6]")).getText();
+                //예금환산수익률
+                String dpstCnvrsRtrnRate = "";
+                //세후수익률
+                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[7]")).getText();
+                //신용등급
+                String crdtRtng = "";
+
+                logger.info("미래에셋증권==" + fdName);
+
+                CrawlingDatas data = setData("미래에셋증권", fdName, exDt, rmnngDays, rtrnRate, dpstCnvrsRtrnRate, taxrtRate, crdtRtng);
+                list.add(data);
+
+            }
+
+        }catch (Exception e){
+            logger.error("====삼성투자증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====삼성투자증권 crawling error end====");
+        }
         return list;
     }
 
