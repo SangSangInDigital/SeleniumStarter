@@ -47,7 +47,7 @@ public class CrawlingController {
         dataList.addAll(crawlingService.crawlerKb(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage06(driver));
+        dataList.addAll(crawlingService.crawlerYuanta(driver));
 
         driver = new ChromeDriver(chromeOptions);
         dataList.addAll(crawlingService.crawlerKiwoom(driver));
