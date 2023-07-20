@@ -46,14 +46,14 @@ public class CrawlingController {
         driver = new ChromeDriver(chromeOptions);
         dataList.addAll(crawlingService.crawlerPage05(driver));
 
-//        driver = new ChromeDriver(chromeOptions);
-//        dataList.addAll(crawlingService.crawlerPage06(driver));
+        driver = new ChromeDriver(chromeOptions);
+        dataList.addAll(crawlingService.crawlerPage06(driver));
 
-//        driver = new ChromeDriver(chromeOptions);
-//        dataList.addAll(crawlingService.crawlerPage07(driver));
+        driver = new ChromeDriver(chromeOptions);
+        dataList.addAll(crawlingService.crawlerPage07(driver));
 
-//        driver = new ChromeDriver(chromeOptions);
-//        dataList.addAll(crawlingService.crawlerPage08(driver));
+        driver = new ChromeDriver(chromeOptions);
+        dataList.addAll(crawlingService.crawlerPage08(driver));
         driver.quit();
         logger.info("******controller end******");
         return ResponseEntity.status(HttpStatus.OK).body(dataList);
