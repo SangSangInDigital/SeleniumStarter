@@ -32,28 +32,28 @@ public class CrawlingController {
         List<CrawlingDatas>  dataList = new ArrayList<>();
 
         ChromeDriver driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage01(driver));
+        dataList.addAll(crawlingService.crawlerTruefriend(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage02(driver));
+        dataList.addAll(crawlingService.crawlerShinhan(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage03(driver));
+        dataList.addAll(crawlingService.crawlerSamsung(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage04(driver));
+        dataList.addAll(crawlingService.crawlerMirae(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage05(driver));
+        dataList.addAll(crawlingService.crawlerKb(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage06(driver));
+        dataList.addAll(crawlingService.crawlerYuanta(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage07(driver));
+        dataList.addAll(crawlingService.crawlerKiwoom(driver));
 
         driver = new ChromeDriver(chromeOptions);
-        dataList.addAll(crawlingService.crawlerPage08(driver));
+        dataList.addAll(crawlingService.crawlerDaishin(driver));
         driver.quit();
         logger.info("******controller end******");
         return ResponseEntity.status(HttpStatus.OK).body(dataList);
