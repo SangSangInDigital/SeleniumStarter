@@ -114,7 +114,7 @@ public class CrawlingService {
             int size = webElements.size();
             for (int i = 1; i < size + 1; i++) {
                 //종목명
-                String fdName = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[2]/a")).getText();
+                String fdName = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr["+i+"]/td[2]/a")).getText();
                 //만기일
                 String exDt = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText();
                 //잔존기간
