@@ -22,7 +22,7 @@ import java.util.List;
 public class CrawlingService {
     private final Logger logger = LoggerFactory.getLogger(CrawlingService.class);
 
-    public List<CrawlingDatas> crawlerPage01(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerTruefriend(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         try {
 
@@ -77,7 +77,7 @@ public class CrawlingService {
         return list;
     }
 
-    public List<CrawlingDatas> crawlerPage02(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerShinhan(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         try {
             driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
@@ -152,7 +152,7 @@ public class CrawlingService {
 
 
 
-    public List<CrawlingDatas> crawlerPage03(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerSamsung(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         try{
             driver.get("https://www.samsungpop.com/?MENU_CODE=M1231752589437");
@@ -212,7 +212,7 @@ public class CrawlingService {
         return list;
     }
 
-    public List<CrawlingDatas> crawlerPage04(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerMirae(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         try{
             driver.get("https://securities.miraeasset.com/hks/hks4036/r01.do");
@@ -261,7 +261,7 @@ public class CrawlingService {
         return list;
     }
 
-    public List<CrawlingDatas> crawlerPage05(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerKb(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
 
         try {
@@ -361,7 +361,7 @@ public class CrawlingService {
         return list;
     }
 
-    public List<CrawlingDatas> crawlerPage07(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerKiwoom(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
 
         try{
@@ -405,7 +405,7 @@ public class CrawlingService {
         return list;
     }
 
-    public List<CrawlingDatas> crawlerPage08(ChromeDriver driver) {
+    public List<CrawlingDatas> crawlerDaishin(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
         try{
             driver.get("https://www.daishin.com/g.ds?m=1019&p=1210&v=797");
