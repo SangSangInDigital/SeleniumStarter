@@ -257,7 +257,86 @@ public class CrawlingService {
 
     public List<CrawlingDatas> crawlerPage05(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
-        driver.get("https://www.kbsec.com/go.able?linkcd=s010602010000");
+
+        try {
+            driver.get("https://www.kbsec.com/go.able?linkcd=s010602010000");
+            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
+        }catch (Exception e){
+            logger.error("====KB증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====KB증권 crawling error end====");
+        }
+        int maxAttempts = 10;
+        int attemptCount = 0;
+
+        while (attemptCount < maxAttempts) {
+            try {
+                // 더보기 버튼 클릭
+                WebElement element = driver.findElement(By.xpath("//*[@id=\"nextBtn\"]/button/span"));
+                if (element.isDisplayed() && element.isEnabled()) {
+                    element.click();
+                    Thread.sleep(1000);
+                    attemptCount++;
+                } else {
+                    break;
+                }
+
+            } catch (Exception e) {
+                logger.error("====KB증권 crawling error start====");
+                logger.error(e.toString());
+                logger.error(e.getMessage());
+                logger.error("====KB증권 crawling error end====");
+                break; // 루프 종료
+            }
+        }
+        try {
+            List<WebElement> webElements = driver.findElements(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr"));
+            logger.info("****Before KB증권 crawling****");
+            int size = webElements.size();
+            for (int i = 1; i < size + 1; i+=2) {
+                //종목명
+                String fdName = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+i+"]/td[1]/a")).getText();
+                //만기일
+                String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+(i+1)+"]/td[2]")).getText().replaceAll("/",".");
+                //잔존기간
+                String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+(i+1)+"]/td[4]")).getText();
+                String[] splitDays = rmnngDays.split(",");
+                StringBuilder sb = new StringBuilder();
+                for(int k=0; k<splitDays.length;k++){
+                    sb.append(splitDays[k]);
+                }
+                int year = Integer.parseInt(sb.toString())/365;
+                int days = Integer.parseInt(sb.toString())%365;
+                rmnngDays = "";
+                if(year!=0){
+                    rmnngDays = year+"년";
+                }
+                rmnngDays = rmnngDays+days+"일";
+                //매수수익률
+                String rtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+i+"]/td[5]")).getText();
+                //예금환산수익률
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+i+"]/td[6]")).getText();
+                //세후수익률
+                String taxrtRate = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+(i+1)+"]/td[6]")).getText();
+                //신용등급
+                String crdtRtng = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+i+"]/td[7]")).getText();
+
+                logger.info("KB증권==" + fdName);
+
+                CrawlingDatas data = setData("KB증권", fdName, exDt, rmnngDays, rtrnRate, dpstCnvrsRtrnRate, taxrtRate, crdtRtng);
+                list.add(data);
+
+            }
+            logger.info("****After KB증권 crawling****");
+        }catch (Exception e){
+            logger.error("====KB증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====KB증권 crawling error end====");
+        }
+
+
         return list;
     }
 
