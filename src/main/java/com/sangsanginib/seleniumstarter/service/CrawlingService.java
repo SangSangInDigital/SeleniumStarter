@@ -356,8 +356,43 @@ public class CrawlingService {
 
     public List<CrawlingDatas> crawlerPage07(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
-        driver.get("https://www.kiwoom.com/wm/bnd/od010/bndOdListView");
-        // TO DO:
+
+        try{
+            driver.get("https://www.kiwoom.com/wm/bnd/od010/bndOdListView");
+
+            List<WebElement> webElements = driver.findElements(By.xpath("/html/body/main/section/div/div/div[3]/div[2]/section/div[3]/div[1]/table/tbody/tr"));
+            int size = webElements.size();
+
+            logger.info("****Before 키움증권 crawling****");
+            for (int i = 1; i < size + 1; i++) {
+                //종목명
+                String fdName = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[1]/div/div[2]/span")).getText();
+                //만기일
+                String exDt = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[7]")).getText();
+                //잔존기간
+                String rmnngDays = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[8]")).getText();
+                //매수수익률
+                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[2]")).getText();
+                //예금환산수익률
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[4]")).getText();
+                //세후수익률
+                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[3]")).getText();
+                //신용등급
+                String crdtRtng = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[10]")).getText();
+
+                logger.info("키움증권==" + fdName);
+
+                CrawlingDatas data = setData("키움증권", fdName, exDt, rmnngDays, rtrnRate, dpstCnvrsRtrnRate, taxrtRate, crdtRtng);
+                list.add(data);
+
+            }
+
+        }catch (Exception e){
+            logger.error("====키움증권 crawling error start====");
+            logger.error(e.toString());
+            logger.error(e.getMessage());
+            logger.error("====키움증권 crawling error end====");
+        }
 
         return list;
     }
