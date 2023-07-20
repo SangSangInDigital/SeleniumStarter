@@ -182,7 +182,8 @@ public class CrawlingService {
                 String rareString = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[3]")).getText();
                 String[] splitStrings = rareString.split("[:,\\n]");
                 String exDt = splitStrings[1].substring(1,splitStrings[1].length()-1);
-                String rmnngDays = splitStrings[0];
+                //잔존기간
+                String rmnngDays = remainingPeriod(exDt);
                 //매수수익률
                 String rtrnRate = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr["+i+"]/td[4]/span/span")).getText();
                 rtrnRate = splitPercent(rtrnRate.substring(1,rtrnRate.length()-1));
@@ -420,17 +421,8 @@ public class CrawlingService {
                 String fdName = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[1]/div/div/p[2]/a[1]")).getText();
                 //만기일
                 String exDt = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[3]/div")).getText().split("[:,\\n]")[0].replaceAll("/","-");
-                LocalDate currentDate = LocalDate.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate targetDate = LocalDate.parse(exDt, formatter);
-                long yearsDifference = ChronoUnit.YEARS.between(currentDate, targetDate);
-                long daysDifference = ChronoUnit.DAYS.between(currentDate, targetDate);
                 //잔존기간
-                String rmnngDays = "";
-                if(yearsDifference !=0){
-                    rmnngDays = yearsDifference + "년";
-                }
-                rmnngDays = rmnngDays + daysDifference + "일";
+                String rmnngDays = remainingPeriod(exDt);
                 //매수수익률
                 String rtrnRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[4]/div/strong")).getText();
                 //예금환산수익률
@@ -458,6 +450,21 @@ public class CrawlingService {
         }
 
         return list;
+    }
+
+    public String remainingPeriod(String exDt){
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate targetDate = LocalDate.parse(exDt, formatter);
+        long yearsDifference = ChronoUnit.YEARS.between(currentDate, targetDate);
+        long daysDifference = ChronoUnit.DAYS.between(currentDate, targetDate);
+        //잔존기간
+        String rmnngDays = "";
+        if(yearsDifference !=0){
+            rmnngDays = yearsDifference + "년";
+        }
+        rmnngDays = rmnngDays + daysDifference + "일";
+        return rmnngDays;
     }
 
     public String splitPercent(String str){
