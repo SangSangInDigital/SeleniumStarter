@@ -372,29 +372,23 @@ public class CrawlingService {
                 logger.info("유안타증권==" + fdName);
 
                 //만기일
-                String exDt = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[4]")).getText().replaceAll("-", ".");
-                logger.info("유안타증권==" + exDt);
+                String exDt = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[4]")).getText();
 
                 //잔존기간
                 String rmnngDays = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[3]")).getText();
-                logger.info("유안타증권==" + rmnngDays);
 
                 //매수수익률
                 String rtrnRate = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[7]/span")).getText();
-                logger.info("유안타증권==" + rtrnRate);
 
                 //예금환산수익률
                 String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[5]")).getText();
                 dpstCnvrsRtrnRate = splitPercent(dpstCnvrsRtrnRate);
-                logger.info("유안타증권==" + dpstCnvrsRtrnRate);
 
                 //세후수익률
                 String taxrtRate = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[6]/span")).getText();
-                logger.info("유안타증권==" + taxrtRate);
 
                 //신용등급
                 String crdtRtng = driver.findElement(By.xpath("//*[@id=\"frm\"]/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr[" + i + "]/td[9]")).getText();
-                logger.info("유안타증권==" + taxrtRate);
 
                 CrawlingDatas data = setData("유안타증권", fdName, exDt, rmnngDays, rtrnRate, dpstCnvrsRtrnRate, taxrtRate, crdtRtng);
                 list.add(data);
@@ -571,7 +565,7 @@ public class CrawlingService {
         if(yearsDifference !=0){
             rmnngDays = yearsDifference + "년";
         }
-        rmnngDays = rmnngDays + daysDifference + "일";
+        rmnngDays = rmnngDays + (daysDifference%365) + "일";
         return rmnngDays;
     }
 
