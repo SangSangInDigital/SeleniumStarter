@@ -1,5 +1,6 @@
 package com.sangsanginib.seleniumstarter.service;
 
+import com.sangsanginib.seleniumstarter.common.ErrorEmailSender;
 import com.sangsanginib.seleniumstarter.dto.CrawlingDatas;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -41,7 +42,7 @@ public class CrawlingService {
                 //종목명
                 String fdName = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[2]/strong")).getText();
                 //만기일
-                String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[4]")).getText().replaceAll("\\.","-");
+                String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + i + "]/td[4]")).getText().replaceAll("\\.", "-");
                 //잔존기간
                 String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[2]/div[2]/div/div[2]/table/tbody/tr[" + (i + 1) + "]/td[1]")).getText();
                 //매수수익률
@@ -70,6 +71,7 @@ public class CrawlingService {
             driver.quit();
         } catch (Exception e) {
             logger.error("====한국투자증권 crawling error start====");
+            ErrorEmailSender.Send("한국투자증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
             logger.error("====한국투자증권 crawling error end====");
@@ -83,17 +85,10 @@ public class CrawlingService {
             driver.get("https://www.shinhansec.com/siw/wealth-management/bond-rp/5901/view.do");
             Thread.sleep(1000);
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
-        } catch (Exception e) {
-            logger.error("====신한투자증권 crawling error start====");
-            logger.error(e.toString());
-            logger.error(e.getMessage());
-            logger.error("====신한투자증권 crawling error end====");
-        }
-        int maxAttempts = 10;
-        int attemptCount = 0;
+            int maxAttempts = 10;
+            int attemptCount = 0;
 
-        while (attemptCount < maxAttempts) {
-            try {
+            while (attemptCount < maxAttempts) {
                 // 더보기 버튼 클릭
                 WebElement element = driver.findElement(By.xpath("//*[@id=\"main\"]/button"));
                 if (element.isDisplayed() && element.isEnabled()) {
@@ -104,23 +99,15 @@ public class CrawlingService {
                     break;
                 }
 
-            } catch (org.openqa.selenium.NoSuchElementException e) {
-                logger.error("====신한투자증권 crawling error start====");
-                logger.error(e.toString());
-                logger.error(e.getMessage());
-                logger.error("====신한투자증권 crawling error end====");
-                break; // 루프 종료
             }
-        }
-        try {
             List<WebElement> webElements = driver.findElements(By.xpath("//*[@id=\"main\"]/table/tbody/tr"));
             logger.info("****Before 신한투자증권 crawling****");
             int size = webElements.size();
             for (int i = 1; i < size + 1; i++) {
                 //종목명
-                String fdName = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr["+i+"]/td[2]/a")).getText();
+                String fdName = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[2]/a")).getText();
                 //만기일
-                String exDt = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText().replaceAll("\\.","-");
+                String exDt = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[3]")).getText().replaceAll("\\.", "-");
                 //잔존기간
                 String rmnngDays = driver.findElement(By.xpath("//*[@id=\"main\"]/table/tbody/tr[" + i + "]/td[4]")).getText();
                 //매수수익률
@@ -143,6 +130,7 @@ public class CrawlingService {
             logger.info("****After 신한투자증권 crawling****");
         } catch (Exception e) {
             logger.error("====신한투자증권 crawling error start====");
+            ErrorEmailSender.Send("신한투자증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
             logger.error("====신한투자증권 crawling error end====");
@@ -179,7 +167,7 @@ public class CrawlingService {
                 //만기일, 잔존기간
                 String rareString = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText();
                 String[] splitStrings = rareString.split("[:,\\n]");
-                String exDt = splitStrings[1].substring(1,splitStrings[1].length()-1);
+                String exDt = splitStrings[1].substring(1, splitStrings[1].length() - 1);
                 //잔존기간
                 String rmnngDays = remainingPeriod(exDt);
                 //매수수익률
@@ -202,11 +190,12 @@ public class CrawlingService {
                 list.add(data);
             }
             logger.info("****After 삼성증권 crawling****");
-        }catch (Exception e){
-            logger.error("====삼성투자증권 crawling error start====");
+        } catch (Exception e) {
+            logger.error("====삼성증권 crawling error start====");
+            ErrorEmailSender.Send("삼성증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
-            logger.error("====삼성투자증권 crawling error end====");
+            logger.error("====삼성증권 crawling error end====");
         }
         return list;
     }
@@ -225,7 +214,7 @@ public class CrawlingService {
                 //종목명
                 String fdName = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr[" + i + "]/td[2]/a")).getText();
                 //만기일
-                String exDt = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr["+i+"]/td[5]")).getText().replaceAll("\\.","-");
+                String exDt = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr[" + i + "]/td[5]")).getText().replaceAll("\\.", "-");
                 //잔존기간
                 String year = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr[" + i + "]/td[3]")).getText();
                 String day = driver.findElement(By.xpath("//*[@id=\"list\"]/tbody/tr[" + i + "]/td[4]")).getText();
@@ -251,11 +240,12 @@ public class CrawlingService {
 
             }
             logger.info("****After 미래에셋증권 crawling****");
-        }catch (Exception e){
-            logger.error("====삼성투자증권 crawling error start====");
+        } catch (Exception e) {
+            logger.error("====미래에셋증권 crawling error start====");
+            ErrorEmailSender.Send("미래에셋증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
-            logger.error("====삼성투자증권 crawling error end====");
+            logger.error("====미래에셋증권 crawling error end====");
         }
         return list;
     }
@@ -267,17 +257,11 @@ public class CrawlingService {
             driver.get("https://www.kbsec.com/go.able?linkcd=s010602010000");
             Thread.sleep(1000);
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
-        } catch (Exception e) {
-            logger.error("====KB증권 crawling error start====");
-            logger.error(e.toString());
-            logger.error(e.getMessage());
-            logger.error("====KB증권 crawling error end====");
-        }
-        int maxAttempts = 10;
-        int attemptCount = 0;
 
-        while (attemptCount < maxAttempts) {
-            try {
+            int maxAttempts = 10;
+            int attemptCount = 0;
+
+            while (attemptCount < maxAttempts) {
                 // 더보기 버튼 클릭
                 WebElement element = driver.findElement(By.xpath("//*[@id=\"nextBtn\"]/button/span"));
                 if (element.isDisplayed() && element.isEnabled()) {
@@ -287,16 +271,7 @@ public class CrawlingService {
                 } else {
                     break;
                 }
-
-            } catch (Exception e) {
-                logger.error("====KB증권 crawling error start====");
-                logger.error(e.toString());
-                logger.error(e.getMessage());
-                logger.error("====KB증권 crawling error end====");
-                break; // 루프 종료
             }
-        }
-        try {
             List<WebElement> webElements = driver.findElements(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr"));
             logger.info("****Before KB증권 crawling****");
             int size = webElements.size();
@@ -304,7 +279,7 @@ public class CrawlingService {
                 //종목명
                 String fdName = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr[" + i + "]/td[1]/a")).getText();
                 //만기일
-                String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr["+(i+1)+"]/td[2]")).getText().replaceAll("/","-");
+                String exDt = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr[" + (i + 1) + "]/td[2]")).getText().replaceAll("/", "-");
                 //잔존기간
                 String rmnngDays = driver.findElement(By.xpath("/html/body/div[2]/div[4]/form[1]/div[3]/div/div/div/table/tbody/tr[" + (i + 1) + "]/td[4]")).getText();
                 String[] splitDays = rmnngDays.split(",");
@@ -337,6 +312,7 @@ public class CrawlingService {
             logger.info("****After KB증권 crawling****");
         } catch (Exception e) {
             logger.error("====KB증권 crawling error start====");
+            ErrorEmailSender.Send("KB증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
             logger.error("====KB증권 crawling error end====");
@@ -354,14 +330,7 @@ public class CrawlingService {
             driver.get("https://www.myasset.com/myasset/mall/item/bond/MA_0602000_T1.cmd");
             Thread.sleep(1000);
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
-        } catch (Exception e) {
-            logger.error("====유안타증권 crawling error start====");
-            logger.error(e.toString());
-            logger.error(e.getMessage());
-            logger.error("====유안타증권 crawling error end====");
-        }
 
-        try {
             List<WebElement> webElements = driver.findElements(By.xpath("/html/body/div[1]/div[4]/div[3]/div/div/ul[2]/li/div/form/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr"));
             logger.info("****Before 유안타증권 crawling****");
             int size = webElements.size();
@@ -395,10 +364,11 @@ public class CrawlingService {
             }
             logger.info("****After 유안타증권 crawling****");
         } catch (Exception e) {
-            logger.error("====유안타증권 crawling error start====");
+            logger.error("====유안타증권 회사채 crawling error start====");
+            ErrorEmailSender.Send("유안타증권 회사채", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
-            logger.error("====유안타증권 crawling error end====");
+            logger.error("====유안타증권 회사채 crawling error end====");
         }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(5000));
@@ -408,14 +378,7 @@ public class CrawlingService {
             driver.get("https://www.myasset.com/myasset/mall/item/bond/MA_0602000_T2.cmd");
             Thread.sleep(1000);
             driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000));
-        } catch (Exception e) {
-            logger.error("====유안타증권 crawling error start====");
-            logger.error(e.toString());
-            logger.error(e.getMessage());
-            logger.error("====유안타증권 crawling error end====");
-        }
 
-        try {
             List<WebElement> webElements = driver.findElements(By.xpath("/html/body/div[1]/div[4]/div[3]/div/div/ul[2]/li/div/form/div/div[1]/div[1]/div[2]/div/div/table/tbody/tr"));
             logger.info("****Before 유안타증권 crawling****");
             int size = webElements.size();
@@ -455,10 +418,11 @@ public class CrawlingService {
             }
             logger.info("****After 유안타증권 crawling****");
         } catch (Exception e) {
-            logger.error("====유안타증권 crawling error start====");
+            logger.error("====유안타증권 국공채 crawling error start====");
+            ErrorEmailSender.Send("유안타증권 국공채", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
-            logger.error("====유안타증권 crawling error end====");
+            logger.error("====유안타증권 국공채 crawling error end====");
         }
 
         return list;
@@ -467,7 +431,7 @@ public class CrawlingService {
     public List<CrawlingDatas> crawlerKiwoom(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
 
-        try{
+        try {
             driver.get("https://www.kiwoom.com/wm/bnd/od010/bndOdListView");
             Thread.sleep(1000);
 
@@ -477,19 +441,19 @@ public class CrawlingService {
             logger.info("****Before 키움증권 crawling****");
             for (int i = 1; i < size + 1; i++) {
                 //종목명
-                String fdName = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[1]/div/div[2]/span")).getText();
+                String fdName = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[1]/div/div[2]/span")).getText();
                 //만기일
-                String exDt = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[7]")).getText().replaceAll("\\.","-");
+                String exDt = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[7]")).getText().replaceAll("\\.", "-");
                 //잔존기간
-                String rmnngDays = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[8]")).getText();
+                String rmnngDays = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[8]")).getText();
                 //매수수익률
-                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[2]")).getText();
+                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[2]")).getText();
                 //예금환산수익률
-                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[4]")).getText();
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[4]")).getText();
                 //세후수익률
-                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[3]")).getText();
+                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[3]")).getText();
                 //신용등급
-                String crdtRtng = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr["+i+"]/td[10]")).getText();
+                String crdtRtng = driver.findElement(By.xpath("//*[@id=\"listTbody\"]/tr[" + i + "]/td[10]")).getText();
 
                 logger.info("키움증권==" + fdName);
 
@@ -498,8 +462,9 @@ public class CrawlingService {
 
             }
             logger.info("****After 키움증권 crawling****");
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("====키움증권 crawling error start====");
+            ErrorEmailSender.Send("키움증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
             logger.error("====키움증권 crawling error end====");
@@ -510,7 +475,7 @@ public class CrawlingService {
 
     public List<CrawlingDatas> crawlerDaishin(ChromeDriver driver) {
         List<CrawlingDatas> list = new ArrayList<>();
-        try{
+        try {
             driver.get("https://www.daishin.com/g.ds?m=1019&p=1210&v=797");
             Thread.sleep(1000);
 
@@ -520,21 +485,21 @@ public class CrawlingService {
             logger.info("****Before 대신증권 crawling****");
             for (int i = 1; i < size + 1; i++) {
                 //종목명
-                String fdName = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[1]/div/div/p[2]/a[1]")).getText();
+                String fdName = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr[" + i + "]/td[1]/div/div/p[2]/a[1]")).getText();
                 //만기일
-                String exDt = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[3]/div")).getText().split("[:,\\n]")[0].replaceAll("/","-");
+                String exDt = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr[" + i + "]/td[3]/div")).getText().split("[:,\\n]")[0].replaceAll("/", "-");
                 //잔존기간
                 String rmnngDays = remainingPeriod(exDt);
                 //매수수익률
-                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[4]/div/strong")).getText();
+                String rtrnRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr[" + i + "]/td[4]/div/strong")).getText();
                 //예금환산수익률
-                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[7]/div")).getText();
+                String dpstCnvrsRtrnRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr[" + i + "]/td[7]/div")).getText();
                 //세후수익률
-                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr["+i+"]/td[6]/div")).getText();
+                String taxrtRate = driver.findElement(By.xpath("//*[@id=\"excel\"]/tbody/tr[" + i + "]/td[6]/div")).getText();
                 //신용등급
-                String[] crdtRtngArr = driver.findElement(By.xpath("/html/body/div[2]/div[8]/div/div/div/table/tbody/tr["+i+"]/td[1]/div/div/p[1]/img[1]")).getAttribute("alt").split(" ");
+                String[] crdtRtngArr = driver.findElement(By.xpath("/html/body/div[2]/div[8]/div/div/div/table/tbody/tr[" + i + "]/td[1]/div/div/p[1]/img[1]")).getAttribute("alt").split(" ");
                 String crdtRtng = "";
-                if(crdtRtngArr.length==2){
+                if (crdtRtngArr.length == 2) {
                     crdtRtng = crdtRtngArr[1];
                 }
                 logger.info("대신증권==" + fdName);
@@ -544,8 +509,9 @@ public class CrawlingService {
 
             }
             logger.info("****After 대신증권 crawling****");
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("====대신증권 crawling error start====");
+            ErrorEmailSender.Send("대신증권", e);
             logger.error(e.toString());
             logger.error(e.getMessage());
             logger.error("====대신증권 crawling error end====");
@@ -554,7 +520,7 @@ public class CrawlingService {
         return list;
     }
 
-    public String remainingPeriod(String exDt){
+    public String remainingPeriod(String exDt) {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate targetDate = LocalDate.parse(exDt, formatter);
@@ -562,16 +528,16 @@ public class CrawlingService {
         long daysDifference = ChronoUnit.DAYS.between(currentDate, targetDate);
         //잔존기간
         String rmnngDays = "";
-        if(yearsDifference !=0){
+        if (yearsDifference != 0) {
             rmnngDays = yearsDifference + "년";
         }
-        rmnngDays = rmnngDays + (daysDifference%365) + "일";
+        rmnngDays = rmnngDays + (daysDifference % 365) + "일";
         return rmnngDays;
     }
 
-    public String splitPercent(String str){
-        if(str.contains("%")){
-            str = str.substring(0,str.length()-1);
+    public String splitPercent(String str) {
+        if (str.contains("%")) {
+            str = str.substring(0, str.length() - 1);
         }
         return str;
     }

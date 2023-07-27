@@ -31,6 +31,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.seleniumhq.selenium:selenium-java'
+	//메일
+	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 }
 
 tasks.named('test') {
