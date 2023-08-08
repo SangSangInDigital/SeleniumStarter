@@ -34,6 +34,8 @@ dependencies {
 	//메일
 	implementation group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
 	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+	//json
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
 }
 
 tasks.named('test') {

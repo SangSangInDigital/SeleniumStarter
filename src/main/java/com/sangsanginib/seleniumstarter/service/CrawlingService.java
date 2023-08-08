@@ -167,7 +167,7 @@ public class CrawlingService {
                 //만기일, 잔존기간
                 String rareString = driver.findElement(By.xpath("//*[@id=\"tab_contents\"]/div/div[1]/div[2]/div/table/tbody/tr[" + i + "]/td[3]")).getText();
                 String[] splitStrings = rareString.split("[:,\\n]");
-                String exDt = splitStrings[1].substring(1, splitStrings[1].length() - 1);
+                String exDt = splitStrings[splitStrings.length-1].substring(1, splitStrings[splitStrings.length-1].length() - 1);
                 //잔존기간
                 String rmnngDays = remainingPeriod(exDt);
                 //매수수익률
